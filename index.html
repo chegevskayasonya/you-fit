@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouFITSupport — Генератор тренувань</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f0f;
+  --surface: #181818;
+  --surface2: #222222;
+  --surface3: #2a2a2a;
+  --border: #333333;
+  --border2: #444444;
+  --text: #e8e8e8;
+  --text2: #aaaaaa;
+  --text3: #666666;
+  --accent: #c8c8c8;
+  --accent2: #888888;
+  --white: #f0f0f0;
+  --highlight: #d4d4d4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Mulish', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── FADE-IN PAGE ── */
+@keyframes pageIn { from{opacity:0} to{opacity:1} }
+body { animation: pageIn .5s ease; }
+
+/* ── NAV ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 3rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(15,15,15,0.95);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  animation: slideDown .5s ease;
+}
+
+@keyframes slideDown { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.7rem;
+  letter-spacing: 0.08em;
+  color: var(--white);
+}
+.logo span { color: var(--text3); }
+
+nav ul { list-style: none; display: flex; gap: 2rem; }
+nav ul a {
+  text-decoration: none;
+  color: var(--text2);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+nav ul a:hover { color: var(--white); }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 6rem 3rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  animation: heroIn .7s ease .1s both;
+}
+
+@keyframes heroIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+  overflow: hidden;
+}
+.dumbbell-bg {
+  width: 520px;
+  opacity: 0.04;
+  transform: rotate(-15deg) translateX(60px);
+}
+.hero-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.hero-tag::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--text3);
+  display: inline-block;
+}
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+}
+.hero h1 .dim { color: var(--text3); }
+.hero p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  max-width: 380px;
+}
+.hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; }
+.stat-item {
+  border-left: 1px solid var(--border2);
+  padding-left: 1rem;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--accent);
+  display: block;
+}
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.dumbbell-hero { display: flex; justify-content: center; align-items: center; }
+.dumbbell-hero svg { width: 100%; max-width: 360px; }
+
+/* ── MAIN CONTENT ── */
+.main-wrap {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: calc(100vh - 80px);
+}
+
+/* ── FORM PANEL ── */
+.form-panel {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: slideLeft .6s ease .2s both;
+}
+
+@keyframes slideLeft { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:none} }
+
+.panel-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 0.2rem;
+}
+.panel-sub { font-size: 0.8rem; color: var(--text3); letter-spacing: 0.04em; }
+.divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+.field-group { display: flex; flex-direction: column; gap: 0.45rem; }
+.field-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.field-label svg { width: 14px; height: 14px; opacity: 0.6; }
+
+input[type="number"], select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.95rem;
+  padding: 0.7rem 1rem;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button { display: none; }
+input[type="number"]:focus, select:focus {
+  border-color: var(--accent2);
+  background: var(--surface3);
+  box-shadow: 0 0 0 2px rgba(136,136,136,.12);
+}
+select option { background: var(--surface2); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+/* ── GOAL CARDS ── */
+.goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.goal-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: border-color .25s, background .25s, transform .2s, box-shadow .25s;
+  background: var(--surface2);
+  position: relative;
+  overflow: hidden;
+}
+.goal-card:hover {
+  border-color: var(--border2);
+  background: var(--surface3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.35);
+}
+.goal-card:active { transform: scale(0.97); }
+
+/* Checkmark badge */
+.goal-card .check-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity .25s, transform .3s cubic-bezier(.34,1.56,.64,1);
+  font-size: 11px;
+  color: #0f0f0f;
+  font-weight: 900;
+  line-height: 1;
+  font-family: Arial, sans-serif;
+}
+.goal-card .check-badge svg { display: none; }
+.goal-card.selected {
+  border-color: var(--accent2);
+  background: var(--surface3);
+}
+.goal-card.selected .check-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ripple on select */
+.goal-card .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(200,200,200,.12);
+  transform: scale(0);
+  animation: ripple .5s linear;
+  pointer-events: none;
+}
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+.goal-icon { font-size: 1.4rem; margin-bottom: 0.3rem; transition: transform .2s; }
+.goal-card:hover .goal-icon { transform: scale(1.15); }
+.goal-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.goal-desc { font-size: 0.7rem; color: var(--text3); margin-top: 0.2rem; }
+
+/* ── PLACE CARDS ── */
+.place-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.place-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: border-color .25s, background .25s, transform .2s, box-shadow .25s;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  position: relative;
+  overflow: hidden;
+}
+.place-card:hover {
+  border-color: var(--border2);
+  background: var(--surface3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.35);
+}
+.place-card:active { transform: scale(0.97); }
+
+/* Checkmark badge for place cards */
+.place-card .check-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity .25s, transform .3s cubic-bezier(.34,1.56,.64,1);
+  font-size: 11px;
+  color: #0f0f0f;
+  font-weight: 900;
+  line-height: 1;
+  font-family: Arial, sans-serif;
+}
+.place-card .check-badge svg { display: none; }
+.place-card.selected {
+  border-color: var(--accent2);
+  background: var(--surface3);
+}
+.place-card.selected .check-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.place-card .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(200,200,200,.12);
+  transform: scale(0);
+  animation: ripple .5s linear;
+  pointer-events: none;
+}
+
+.place-icon { font-size: 1.3rem; transition: transform .2s; }
+.place-card:hover .place-icon { transform: scale(1.15); }
+.place-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── GENERATE BUTTON ── */
+.btn-generate {
+  width: 100%;
+  padding: 1rem;
+  background: var(--white);
+  color: #0f0f0f;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.btn-generate:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(200,200,200,.18);
+}
+.btn-generate:active { transform: scale(0.98); }
+.btn-generate svg { width: 18px; height: 18px; transition: transform .3s; }
+.btn-generate:hover svg { transform: rotate(15deg) scale(1.1); }
+
+/* ── CHAT PANEL ── */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  animation: slideRight .6s ease .3s both;
+}
+@keyframes slideRight { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:none} }
+
+.chat-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.chat-header-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #5a5a5a;
+  transition: background .3s;
+}
+.chat-header-dot.active { background: #888; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.chat-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+}
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  min-height: 400px;
+}
+.msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 88%;
+  animation: fadeUp .35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+.msg.bot { align-self: flex-start; }
+.msg.user { align-self: flex-end; }
+.msg-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+.msg.user .msg-label { text-align: right; }
+.msg-bubble {
+  padding: 1rem 1.2rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  transition: box-shadow .2s;
+}
+.msg.bot .msg-bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.msg.user .msg-bubble {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+}
+.msg-bubble strong { color: var(--white); font-weight: 700; }
+.msg-bubble ul {
+  margin: 0.6rem 0 0.2rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.msg-bubble li { color: var(--text2); }
+.msg-bubble li strong { color: var(--accent); }
+
+.workout-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-top: 0.8rem;
+  overflow: hidden;
+}
+.workout-day {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .15s;
+  user-select: none;
+}
+.workout-day:hover { background: var(--surface3); }
+.workout-day:last-child { border-bottom: none; }
+.day-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.day-focus { font-size: 0.75rem; color: var(--text3); }
+.day-arrow { font-size: 0.6rem; color: var(--text3); transition: transform .2s; }
+.day-arrow.open { transform: rotate(180deg); }
+.day-exercises {
+  display: none;
+  padding: 0.6rem 1rem 0.8rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.day-exercises.open { display: block; }
+.exercise-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+.exercise-row:last-child { border-bottom: none; }
+.ex-name { color: var(--text); font-weight: 500; }
+.ex-sets { color: var(--text3); font-size: 0.72rem; }
+
+/* ── CHAT INPUT ── */
+.chat-input-wrap {
+  padding: 1.2rem 2rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  animation: fadeUp .4s ease;
+}
+.chat-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.88rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.chat-input::placeholder { color: var(--text3); }
+.chat-input:focus {
+  border-color: var(--border2);
+  box-shadow: 0 0 0 2px rgba(136,136,136,.1);
+}
+.btn-send {
+  padding: 0.75rem 1.2rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background .2s, border-color .2s, transform .15s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn-send:hover { background: var(--surface3); border-color: var(--border2); transform: translateY(-1px); }
+.btn-send:active { transform: scale(0.97); }
+.btn-send svg { width: 15px; height: 15px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  opacity: 0.35;
+  animation: fadeUp .6s ease .4s both;
+}
+.empty-icon {
+  opacity: 0.4;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+.empty-state p {
+  font-size: 0.82rem;
+  color: var(--text2);
+  text-align: center;
+  max-width: 240px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── THINKING ── */
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: fit-content;
+}
+.thinking span {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--text3);
+  animation: blink 1.2s infinite;
+}
+.thinking span:nth-child(2) { animation-delay: .2s; }
+.thinking span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+/* ── SCROLLBAR ── */
+.messages::-webkit-scrollbar { width: 4px; }
+.messages::-webkit-scrollbar-track { background: transparent; }
+.messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+  .dumbbell-hero { display: none; }
+  .main-wrap { grid-template-columns: 1fr; }
+  .form-panel { border-right: none; border-bottom: 1px solid var(--border); }
+  nav { padding: 1rem 1.5rem; }
+  nav ul { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">YouFIT<span>Support</span></div>
+  <ul>
+    <li><a href="#hero">Головна</a></li>
+    <li><a href="#programs">Програми</a></li>
+    <li><a href="#about">Про нас</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <svg class="dumbbell-bg" viewBox="0 0 400 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="60" width="400" height="40" rx="20" fill="white"/>
+      <rect x="0" y="20" width="80" height="120" rx="16" fill="white"/>
+      <rect x="320" y="20" width="80" height="120" rx="16" fill="white"/>
+    </svg>
+  </div>
+  <div>
+    <div class="hero-tag">AI — персоналізація</div>
+    <h1>ГЕНЕРАТОР<br><span class="dim">ТВОГО</span><br>ТРЕНУВАННЯ</h1>
+    <p>Введи параметри тіла та мету — ШІ створить персональний план тренувань і коригуватиме його в діалозі.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Персонально</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">AI</span>
+        <span class="stat-label">Корекція</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">Підтримка</span>
+      </div>
+    </div>
+  </div>
+  <div class="dumbbell-hero">
+    <svg viewBox="0 0 360 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="60" width="60" height="80" rx="12" fill="#2a2a2a" stroke="#444" stroke-width="1.5"/>
+      <rect x="30" y="50" width="40" height="100" rx="10" fill="#333" stroke="#444" stroke-width="1"/>
+      <rect x="40" y="44" width="20" height="112" rx="8" fill="#3a3a3a" stroke="#555" stroke-width="1"/>
+      <rect x="60" y="90" width="240" height="20" rx="10" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+      <rect x="80" y="93" width="200" height="14" rx="7" fill="#333"/>
+      <rect x="280" y="44" width="20" height="112" rx="8" fill="#3a3a3a" stroke="#555" stroke-width="1"/>
+      <rect x="290" y="50" width="40" height="100" rx="10" fill="#333" stroke="#444" stroke-width="1"/>
+      <rect x="280" y="60" width="60" height="80" rx="12" fill="#2a2a2a" stroke="#444" stroke-width="1.5"/>
+      <circle cx="50" cy="100" r="5" fill="#444"/>
+      <circle cx="310" cy="100" r="5" fill="#444"/>
+      <line x1="50" y1="80" x2="50" y2="120" stroke="#555" stroke-width="1"/>
+      <line x1="310" y1="80" x2="310" y2="120" stroke="#555" stroke-width="1"/>
+    </svg>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main-wrap" id="programs">
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <div>
+      <div class="panel-title">Параметри</div>
+      <div class="panel-sub">Заповни всі поля для генерації плану</div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="row2">
+      <div class="field-group">
+        <label class="field-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+          Вік (років)
+        </label>
+        <input type="number" id="age" placeholder="25" min="14" max="80">
+      </div>
+      <div class="field-group">
+        <label class="field-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M4 7h3M4 12h3M4 17h3M17 7h3M17 12h3M17 17h3"/></svg>
+          Зріст (см)
+        </label>
+        <input type="number" id="height" placeholder="175" min="140" max="230">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field-group">
+        <label class="field-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Вага (кг)
+        </label>
+        <input type="number" id="weight" placeholder="75" min="35" max="200">
+      </div>
+      <div class="field-group">
+        <label class="field-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Стать
+        </label>
+        <select id="gender">
+          <option value="">— Обрати —</option>
+          <option value="male">Чоловіча</option>
+          <option value="female">Жіноча</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Мета тренувань</label>
+      <div class="goal-grid">
+        <div class="goal-card" data-goal="lose" onclick="selectGoal(this, event)">
+          <div class="check-badge">&#10003;</div>
+          <div class="goal-icon">🔥</div>
+          <div class="goal-name">Схуднути</div>
+          <div class="goal-desc">Спалювання жиру та рельєф</div>
+        </div>
+        <div class="goal-card" data-goal="gain" onclick="selectGoal(this, event)">
+          <div class="check-badge">&#10003;</div>
+          <div class="goal-icon">💪</div>
+          <div class="goal-name">Набрати</div>
+          <div class="goal-desc">М'язова маса</div>
+        </div>
+        <div class="goal-card" data-goal="endurance" onclick="selectGoal(this, event)">
+          <div class="check-badge">&#10003;</div>
+          <div class="goal-icon">🏃</div>
+          <div class="goal-name">Витривалість</div>
+          <div class="goal-desc">Кардіо та сила</div>
+        </div>
+        <div class="goal-card" data-goal="maintain" onclick="selectGoal(this, event)">
+          <div class="check-badge">&#10003;</div>
+          <div class="goal-icon">⚖️</div>
+          <div class="goal-name">Підтримка</div>
+          <div class="goal-desc">Форма та тонус</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Місце тренувань</label>
+      <div class="place-grid">
+        <div class="place-card" data-place="gym" onclick="selectPlace(this, event)">
+          <div class="check-badge">&#10003;</div>
+          <span class="place-icon">🏋️</span>
+          <span class="place-name">Зал</span>
+        </div>
+        <div class="place-card" data-place="home" onclick="selectPlace(this, event)">
+          <div class="check-badge">&#10003;</div>
+          <span class="place-icon">🏠</span>
+          <span class="place-name">Вдома</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-generate" onclick="generatePlan()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Згенерувати план
+    </button>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="chat-header-dot" id="chatDot"></div>
+      <div class="chat-title" id="chatTitle">Очікування параметрів</div>
+    </div>
+    <div class="messages" id="messages">
+      <div class="empty-state" id="emptyState">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="empty-icon">
+          <rect x="8" y="24" width="48" height="16" rx="8" fill="#333"/>
+          <rect x="8" y="16" width="14" height="32" rx="6" fill="#3a3a3a"/>
+          <rect x="42" y="16" width="14" height="32" rx="6" fill="#3a3a3a"/>
+        </svg>
+        <p>Заповни параметри ліворуч і натисни «Згенерувати»</p>
+      </div>
+    </div>
+    <div class="chat-input-wrap" id="chatInputWrap" style="display:none;">
+      <input type="text" class="chat-input" id="chatInput"
+        placeholder="Постав питання або попроси скоригувати план..."
+        onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="btn-send" onclick="sendMsg()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+        Надіслати
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ANTHROPIC_API_URL = '/api/chat';
+let selectedGoal = '';
+let selectedPlace = '';
+let conversationHistory = [];
+let userData = {};
+
+function addRipple(el, event) {
+  const rect = el.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - rect.left - size/2}px;top:${event.clientY - rect.top - size/2}px`;
+  el.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove());
+}
+
+function selectGoal(el, event) {
+  document.querySelectorAll('.goal-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedGoal = el.dataset.goal;
+  addRipple(el, event);
+}
+
+function selectPlace(el, event) {
+  document.querySelectorAll('.place-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlace = el.dataset.place;
+  addRipple(el, event);
+}
+
+const goalMap = {
+  lose: 'схуднення та спалювання жиру',
+  gain: 'набір м\'язової маси',
+  endurance: 'витривалість та кардіо',
+  maintain: 'підтримання форми та тонусу'
+};
+const placeMap = {
+  gym: 'спортивний зал (доступні штанги, гантелі, тренажери, кабелі)',
+  home: 'домашні тренування (мінімальне обладнання, вага тіла, гантелі за наявності)'
+};
+
+function generatePlan() {
+  const age = document.getElementById('age').value;
+  const height = document.getElementById('height').value;
+  const weight = document.getElementById('weight').value;
+  const gender = document.getElementById('gender').value;
+
+  if (!age || !height || !weight || !gender || !selectedGoal || !selectedPlace) {
+    alert('Будь ласка, заповни всі поля');
+    return;
+  }
+
+  userData = { age, height, weight, gender, goal: selectedGoal, place: selectedPlace };
+
+  document.getElementById('emptyState')?.remove();
+  const dot = document.getElementById('chatDot');
+  dot.classList.add('active');
+  document.getElementById('chatTitle').textContent = 'AI генерує план...';
+  document.getElementById('chatInputWrap').style.display = 'flex';
+
+  const systemPrompt = `Ти — персональний AI-тренер YouFITSupport. Ти розмовляєш українською мовою. Твій стиль: професійний, мотивуючий, лаконічний. Ти генеруєш реалістичні, безпечні та ефективні плани тренувань з урахуванням параметрів користувача. Після генерації плану ти ведеш діалог, коригуючи програму на прохання користувача. Використовуй HTML-розмітку: <strong> для виділення, <ul><li> для списків. НЕ використовуй markdown-символи (* # тощо).`;
+
+  const genderStr = gender === 'male' ? 'чоловік' : 'жінка';
+  const bmi = (weight / ((height / 100) ** 2)).toFixed(1);
+
+  const userMessage = `Мої параметри:\n- Вік: ${age} років\n- Зріст: ${height} см\n- Вага: ${weight} кг\n- Стать: ${genderStr}\n- ІМТ: ${bmi}\n- Мета: ${goalMap[selectedGoal]}\n- Місце тренувань: ${placeMap[selectedPlace]}\n\nСклади мені персональний план тренувань на тиждень. Вкажи:\n1. Короткий аналіз моїх параметрів\n2. Тижневий план (дні тренувань та відпочинку, групи м'язів)\n3. Для кожного тренувального дня — список вправ з підходами та повтореннями\n4. Декілька порад щодо харчування та відновлення\n\nБудь конкретним та структурованим.`;
+
+  conversationHistory = [];
+  callAPI(systemPrompt, userMessage);
+}
+
+function addUserMessage(text) {
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="msg-label">Ви</div><div class="msg-bubble">${text}</div>`;
+  appendMessage(div);
+}
+
+function addBotMessage(html) {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = `<div class="msg-label">YouFIT AI</div><div class="msg-bubble">${html}</div>`;
+  appendMessage(div);
+}
+
+function appendMessage(el) {
+  const msgs = document.getElementById('messages');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showThinking() {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'thinking';
+  div.innerHTML = `<div class="msg-label">YouFIT AI</div><div class="thinking"><span></span><span></span><span></span></div>`;
+  appendMessage(div);
+}
+
+function removeThinking() {
+  document.getElementById('thinking')?.remove();
+}
+
+async function callAPI(systemPrompt, userText) {
+  conversationHistory.push({ role: 'user', content: userText });
+  showThinking();
+  try {
+    const res = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        max_tokens: 1000,
+        system: systemPrompt || `Ти — персональний AI-тренер YouFITSupport. Ти вже створив план тренувань для користувача з такими параметрами: вік ${userData.age} років, зріст ${userData.height} см, вага ${userData.weight} кг, мета: ${goalMap[userData.goal]}, місце: ${placeMap[userData.place]}. Продовжуй допомагати коригувати програму. Відповідай українською мовою, професійно та лаконічно. Використовуй HTML: <strong>, <ul><li>. НЕ використовуй markdown.`,
+        messages: conversationHistory
+      })
+    });
+    const data = await res.json();
+    removeThinking();
+    const text = data.content?.map(i => i.text || '').join('') || 'Сталася помилка. Спробуй ще раз.';
+    conversationHistory.push({ role: 'assistant', content: text });
+    addBotMessage(text);
+    document.getElementById('chatTitle').textContent = 'Діалог з AI-тренером';
+    document.getElementById('chatDot').classList.remove('active');
+  } catch (e) {
+    removeThinking();
+    addBotMessage('<strong>Помилка з\'єднання.</strong> Перевір інтернет і спробуй знову.');
+    document.getElementById('chatTitle').textContent = 'Очікування';
+    document.getElementById('chatDot').classList.remove('active');
+  }
+}
+
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addUserMessage(text);
+  const sysPrompt = `Ти — персональний AI-тренер YouFITSupport. Ти вже створив план тренувань для користувача: вік ${userData.age} років, зріст ${userData.height} см, вага ${userData.weight} кг, стать: ${userData.gender === 'male' ? 'чоловік' : 'жінка'}, мета: ${goalMap[userData.goal]}, місце: ${placeMap[userData.place]}. Продовжуй консультацію — коригуй план на прохання, відповідай на питання про тренування, харчування, відновлення. Говори українською мовою, професійно. Використовуй HTML: <strong>, <ul><li>. НЕ використовуй markdown.`;
+  callAPI(sysPrompt, text);
+}
+</script>
+<!-- ABOUT SECTION -->
+<section id="about" style="padding:5rem 3rem; border-top:1px solid var(--border); background:var(--surface); max-width:100%;">
+  <div style="max-width:760px; margin:0 auto;">
+    <div style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;">
+      <span style="width:24px;height:1px;background:var(--text3);display:inline-block;"></span>
+      Про нас
+    </div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,4vw,4rem);color:var(--white);letter-spacing:0.04em;line-height:1;margin-bottom:1.5rem;">
+      YOUFIT<span style="color:var(--text3);">SUPPORT</span>
+    </h2>
+    <p style="color:var(--text2);font-size:0.95rem;line-height:1.8;margin-bottom:1.5rem;max-width:580px;">
+      YouFITSupport — це AI-платформа персоналізованих тренувань. Ми поєднуємо сучасні технології штучного інтелекту з науковим підходом до фітнесу, щоб кожен отримав план, створений саме для нього.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem;">
+      <div style="border-left:1px solid var(--border2);padding-left:1.2rem;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);">AI</div>
+        <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;">Персональний тренер</div>
+      </div>
+      <div style="border-left:1px solid var(--border2);padding-left:1.2rem;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);">24/7</div>
+        <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;">Підтримка онлайн</div>
+      </div>
+      <div style="border-left:1px solid var(--border2);padding-left:1.2rem;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);">100%</div>
+        <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;">Безкоштовно</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* Smooth scroll for nav links */
+document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
