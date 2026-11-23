@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>YouFITSupport — Генератор тренувань</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f0f;
+  --surface: #181818;
+  --surface2: #222222;
+  --surface3: #2a2a2a;
+  --border: #333333;
+  --border2: #444444;
+  --text: #e8e8e8;
+  --text2: #aaaaaa;
+  --text3: #777777;
+  --accent: #c8c8c8;
+  --accent2: #888888;
+  --white: #f0f0f0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Mulish', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── NAV ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  padding-top: calc(0.8rem + env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(15,15,15,0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  color: var(--white);
+}
+.logo span { color: var(--text3); }
+
+.burger {
+  width: 44px; height: 44px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.burger span {
+  display: block;
+  width: 20px; height: 2px;
+  background: var(--white);
+  transition: transform .25s, opacity .2s;
+}
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.menu {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 5rem 1.2rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-100%);
+  transition: transform .3s ease;
+  z-index: 90;
+  list-style: none;
+}
+.menu.open { transform: translateY(0); }
+.menu a {
+  display: block;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.menu li:last-child a { border-bottom: none; }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 2.5rem 1.2rem 2.2rem;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: flex-end;
+  pointer-events: none; overflow: hidden;
+}
+.dumbbell-bg { width: 320px; opacity: 0.04; transform: rotate(-15deg) translateX(60px); }
+.hero-content { position: relative; }
+.hero-tag {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.hero-tag::before { content: ''; width: 24px; height: 1px; background: var(--text3); }
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 15vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  margin-bottom: 1.1rem;
+}
+.hero h1 .dim { color: var(--text3); }
+.hero p { color: var(--text2); font-size: 0.92rem; line-height: 1.65; }
+.hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-top: 1.8rem; }
+.stat-item { border-left: 1px solid var(--border2); padding-left: 0.7rem; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: var(--accent); display: block; }
+.stat-label { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ── FORM PANEL ── */
+.form-panel {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1.6rem 1.2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+.panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; color: var(--white); }
+.panel-sub { font-size: 0.8rem; color: var(--text3); }
+.divider { height: 1px; background: var(--border); }
+.field-group { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+.field-label {
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text2);
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.field-label svg { width: 14px; height: 14px; opacity: 0.6; flex-shrink: 0; }
+
+input[type="number"], select {
+  width: 100%;
+  min-height: 48px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Mulish', sans-serif;
+  font-size: 16px; /* без авто-зуму на iOS */
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  outline: none;
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23aaa' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.2rem;
+}
+input[type="number"]::-webkit-inner-spin-button { display: none; }
+input[type="number"]:focus, select:focus { border-color: var(--accent2); background-color: var(--surface3); }
+select option { background: var(--surface2); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+
+.goal-grid, .place-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.goal-card, .place-card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface2);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, background .2s, transform .15s;
+}
+.goal-card { padding: 0.85rem 0.9rem; min-height: 88px; }
+.place-card { padding: 0.85rem 0.9rem; min-height: 56px; display: flex; align-items: center; gap: 0.6rem; }
+.goal-card:active, .place-card:active { transform: scale(0.97); }
+.goal-card.selected, .place-card.selected { border-color: var(--accent2); background: var(--surface3); }
+
+.check-badge {
+  position: absolute; top: 6px; right: 6px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent2);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: scale(0);
+  transition: opacity .25s, transform .3s cubic-bezier(.34,1.56,.64,1);
+  font-size: 11px; color: #0f0f0f; font-weight: 900;
+  font-family: Arial, sans-serif;
+}
+.selected .check-badge { opacity: 1; transform: scale(1); }
+
+.ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(200,200,200,.12);
+  transform: scale(0);
+  animation: ripple .5s linear;
+  pointer-events: none;
+}
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+.goal-icon { font-size: 1.4rem; margin-bottom: 0.25rem; }
+.place-icon { font-size: 1.3rem; }
+.goal-name, .place-name {
+  font-size: 0.78rem; font-weight: 600; color: var(--text);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.goal-desc { font-size: 0.68rem; color: var(--text3); margin-top: 0.2rem; }
+
+.btn-generate {
+  width: 100%;
+  min-height: 54px;
+  background: var(--white);
+  color: #0f0f0f;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+}
+.btn-generate:active { transform: scale(0.98); background: var(--accent); }
+.btn-generate svg { width: 18px; height: 18px; }
+
+/* ── CHAT ── */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  scroll-margin-top: 70px;
+}
+.chat-header {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.chat-header-dot { width: 8px; height: 8px; border-radius: 50%; background: #5a5a5a; }
+.chat-header-dot.active { background: #aaa; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.chat-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); }
+
+.messages {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1.2rem 1rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  min-height: 280px;
+  max-height: 70vh;
+  max-height: 70dvh;
+}
+.msg { display: flex; flex-direction: column; max-width: 94%; animation: fadeUp .3s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+.msg.bot { align-self: flex-start; }
+.msg.user { align-self: flex-end; max-width: 88%; }
+.msg-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 0.3rem; font-weight: 600; }
+.msg.user .msg-label { text-align: right; }
+.msg-bubble {
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.msg.bot .msg-bubble { background: var(--surface); border: 1px solid var(--border); }
+.msg.user .msg-bubble { background: var(--surface3); border: 1px solid var(--border2); }
+.msg-bubble strong { color: var(--white); font-weight: 700; }
+.msg-bubble ul { margin: 0.6rem 0 0.2rem 1.1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.msg-bubble li { color: var(--text2); }
+.msg-bubble li strong { color: var(--accent); }
+
+.chat-input-wrap {
+  padding: 0.8rem 1rem;
+  padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  display: flex; gap: 0.6rem; align-items: center;
+  position: sticky; bottom: 0;
+  background: var(--bg);
+}
+.chat-input {
+  flex: 1; min-width: 0;
+  min-height: 48px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Mulish', sans-serif;
+  font-size: 16px;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  outline: none;
+}
+.chat-input::placeholder { color: var(--text3); }
+.chat-input:focus { border-color: var(--border2); }
+.btn-send {
+  width: 48px; height: 48px;
+  flex-shrink: 0;
+  background: var(--white);
+  border: none;
+  color: #0f0f0f;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-send:active { transform: scale(0.95); }
+.btn-send svg { width: 20px; height: 20px; }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1rem; padding: 2.5rem 1rem; opacity: 0.4;
+}
+.empty-state p {
+  font-size: 0.78rem; color: var(--text2); text-align: center; max-width: 240px;
+  line-height: 1.5; text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+.thinking {
+  display: flex; align-items: center; gap: 4px;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: fit-content;
+}
+.thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); animation: blink 1.2s infinite; }
+.thinking span:nth-child(2) { animation-delay: .2s; }
+.thinking span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+/* ── ABOUT ── */
+.about {
+  padding: 2.5rem 1.2rem 3rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  scroll-margin-top: 70px;
+}
+.about-tag {
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text3); font-weight: 600; margin-bottom: 0.9rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.about-tag::before { content: ''; width: 24px; height: 1px; background: var(--text3); }
+.about h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.4rem, 12vw, 3.4rem);
+  color: var(--white); letter-spacing: 0.04em; line-height: 1; margin-bottom: 1.1rem;
+}
+.about h2 span { color: var(--text3); }
+.about p { color: var(--text2); font-size: 0.92rem; line-height: 1.75; }
+.about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-top: 2rem; }
+.about-stat { border-left: 1px solid var(--border2); padding-left: 0.7rem; }
+.about-stat .n { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: var(--accent); }
+.about-stat .l { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
+
+/* ── PHOTO BACKGROUNDS ── (без файла в img/ просто останется тёмный градиент) */
+.hero {
+  background:
+    linear-gradient(180deg, rgba(15,15,15,.55) 0%, rgba(15,15,15,.92) 100%),
+    url('img/gym-2.jpg') center / cover no-repeat;
+}
+.hero-bg { display: none; }
+
+.messages {
+  background:
+    linear-gradient(rgba(15,15,15,.88), rgba(15,15,15,.94)),
+    url('img/gym-6.jpg') center / cover no-repeat;
+}
+
+.banner {
+  position: relative;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  padding: 2rem 1.2rem;
+  border-top: 1px solid var(--border);
+  background:
+    linear-gradient(90deg, rgba(15,15,15,.9) 0%, rgba(15,15,15,.45) 100%),
+    url('img/gym-4.jpg') center / cover no-repeat;
+}
+.banner p {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.2rem, 11vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.banner p span { color: var(--text3); }
+
+.about {
+  background:
+    linear-gradient(rgba(24,24,24,.9), rgba(24,24,24,.97)),
+    url('img/gym-1.jpg') center / cover no-repeat;
+}
+
+/* ── TABLET+ ── */
+@media (min-width: 700px) {
+  .hero, .form-panel, .about { padding-left: 2rem; padding-right: 2rem; }
+  .messages { max-height: 60vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">YouFIT<span>Support</span></div>
+  <button class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<ul class="menu" id="menu">
+  <li><a href="#hero">Головна</a></li>
+  <li><a href="#programs">Програми</a></li>
+  <li><a href="#about">Про нас</a></li>
+</ul>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <svg class="dumbbell-bg" viewBox="0 0 400 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="60" width="400" height="40" rx="20" fill="white"/>
+      <rect x="0" y="20" width="80" height="120" rx="16" fill="white"/>
+      <rect x="320" y="20" width="80" height="120" rx="16" fill="white"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-tag">AI — персоналізація</div>
+    <h1>ГЕНЕРАТОР<br><span class="dim">ТВОГО</span><br>ТРЕНУВАННЯ</h1>
+    <p>Введи параметри тіла та мету — ШІ створить персональний план тренувань і коригуватиме його в діалозі.</p>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Персонально</span></div>
+      <div class="stat-item"><span class="stat-num">AI</span><span class="stat-label">Корекція</span></div>
+      <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Підтримка</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<div class="form-panel" id="programs">
+  <div>
+    <div class="panel-title">Параметри</div>
+    <div class="panel-sub">Заповни всі поля для генерації плану</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="row2">
+    <div class="field-group">
+      <label class="field-label" for="age">Вік (років)</label>
+      <input type="number" id="age" placeholder="25" min="14" max="80" inputmode="numeric">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="height">Зріст (см)</label>
+      <input type="number" id="height" placeholder="175" min="140" max="230" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="field-group">
+      <label class="field-label" for="weight">Вага (кг)</label>
+      <input type="number" id="weight" placeholder="75" min="35" max="200" inputmode="decimal">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="gender">Стать</label>
+      <select id="gender">
+        <option value="">— Обрати —</option>
+        <option value="male">Чоловіча</option>
+        <option value="female">Жіноча</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label">Мета тренувань</label>
+    <div class="goal-grid">
+      <div class="goal-card" data-goal="lose" onclick="selectGoal(this, event)">
+        <div class="check-badge">&#10003;</div>
+        <div class="goal-name">Схуднути</div>
+        <div class="goal-desc">Спалювання жиру та рельєф</div>
+      </div>
+      <div class="goal-card" data-goal="gain" onclick="selectGoal(this, event)">
+        <div class="check-badge">&#10003;</div>
+        <div class="goal-name">Набрати</div>
+        <div class="goal-desc">М'язова маса</div>
+      </div>
+      <div class="goal-card" data-goal="endurance" onclick="selectGoal(this, event)">
+        <div class="check-badge">&#10003;</div>
+        <div class="goal-name">Витривалість</div>
+        <div class="goal-desc">Кардіо та сила</div>
+      </div>
+      <div class="goal-card" data-goal="maintain" onclick="selectGoal(this, event)">
+        <div class="check-badge">&#10003;</div>
+        <div class="goal-name">Підтримка</div>
+        <div class="goal-desc">Форма та тонус</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label">Місце тренувань</label>
+    <div class="place-grid">
+      <div class="place-card" data-place="gym" onclick="selectPlace(this, event)">
+        <div class="check-badge">&#10003;</div>
+        <span class="place-name">Зал</span>
+      </div>
+      <div class="place-card" data-place="home" onclick="selectPlace(this, event)">
+        <div class="check-badge">&#10003;</div>
+        <span class="place-name">Вдома</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-generate" onclick="generatePlan()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    Згенерувати план
+  </button>
+</div>
+
+<!-- CHAT -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-header-dot" id="chatDot"></div>
+    <div class="chat-title" id="chatTitle">Очікування параметрів</div>
+  </div>
+  <div class="messages" id="messages">
+    <div class="empty-state" id="emptyState">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <rect x="8" y="24" width="48" height="16" rx="8" fill="#333"/>
+        <rect x="8" y="16" width="14" height="32" rx="6" fill="#3a3a3a"/>
+        <rect x="42" y="16" width="14" height="32" rx="6" fill="#3a3a3a"/>
+      </svg>
+      <p>Заповни параметри вище і натисни «Згенерувати»</p>
+    </div>
+  </div>
+  <div class="chat-input-wrap" id="chatInputWrap" style="display:none;">
+    <input type="text" class="chat-input" id="chatInput" enterkeyhint="send"
+      placeholder="Скоригуй план або постав питання..."
+      onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="btn-send" onclick="sendMsg()" aria-label="Надіслати">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- BANNER -->
+<section class="banner">
+  <p>GYM,<br>STUDY,<br>SLEEP,<br><span>REPEAT.</span></p>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-tag">Про нас</div>
+  <h2>YOUFIT<span>SUPPORT</span></h2>
+  <p>YouFITSupport — це AI-платформа персоналізованих тренувань. Ми поєднуємо сучасні технології штучного інтелекту з науковим підходом до фітнесу, щоб кожен отримав план, створений саме для нього.</p>
+  <div class="about-stats">
+    <div class="about-stat"><div class="n">AI</div><div class="l">Персональний тренер</div></div>
+    <div class="about-stat"><div class="n">24/7</div><div class="l">Підтримка онлайн</div></div>
+    <div class="about-stat"><div class="n">100%</div><div class="l">Безкоштовно</div></div>
+  </div>
+</section>
+
+<script>
+const ANTHROPIC_API_URL = '/api/chat';
+let selectedGoal = '';
+let selectedPlace = '';
+let conversationHistory = [];
+let userData = {};
+
+/* ── Меню ── */
+const burger = document.getElementById('burger');
+const menu = document.getElementById('menu');
+function toggleMenu(force) {
+  const open = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  burger.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', open);
+}
+burger.addEventListener('click', () => toggleMenu());
+document.querySelectorAll('.menu a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    toggleMenu(false);
+    document.querySelector(link.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+document.addEventListener('click', e => {
+  if (!menu.contains(e.target) && !burger.contains(e.target)) toggleMenu(false);
+});
+
+/* ── Вибір ── */
+function addRipple(el, event) {
+  const rect = el.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - rect.left - size/2}px;top:${event.clientY - rect.top - size/2}px`;
+  el.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove());
+}
+function selectGoal(el, event) {
+  document.querySelectorAll('.goal-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedGoal = el.dataset.goal;
+  addRipple(el, event);
+}
+function selectPlace(el, event) {
+  document.querySelectorAll('.place-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlace = el.dataset.place;
+  addRipple(el, event);
+}
+
+const goalMap = {
+  lose: 'схуднення та спалювання жиру',
+  gain: 'набір м\'язової маси',
+  endurance: 'витривалість та кардіо',
+  maintain: 'підтримання форми та тонусу'
+};
+const placeMap = {
+  gym: 'спортивний зал (доступні штанги, гантелі, тренажери, кабелі)',
+  home: 'домашні тренування (мінімальне обладнання, вага тіла, гантелі за наявності)'
+};
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function generatePlan() {
+  const age = document.getElementById('age').value;
+  const height = document.getElementById('height').value;
+  const weight = document.getElementById('weight').value;
+  const gender = document.getElementById('gender').value;
+
+  if (!age || !height || !weight || !gender || !selectedGoal || !selectedPlace) {
+    alert('Будь ласка, заповни всі поля');
+    return;
+  }
+
+  userData = { age, height, weight, gender, goal: selectedGoal, place: selectedPlace };
+
+  document.getElementById('emptyState')?.remove();
+  document.getElementById('chatDot').classList.add('active');
+  document.getElementById('chatTitle').textContent = 'AI генерує план...';
+  document.getElementById('chatInputWrap').style.display = 'flex';
+  document.getElementById('chatPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const systemPrompt = `Ти — персональний AI-тренер YouFITSupport. Ти розмовляєш українською мовою. Твій стиль: професійний, мотивуючий, лаконічний. Ти генеруєш реалістичні, безпечні та ефективні плани тренувань з урахуванням параметрів користувача. Після генерації плану ти ведеш діалог, коригуючи програму на прохання користувача. Використовуй HTML-розмітку: <strong> для виділення, <ul><li> для списків. НЕ використовуй markdown-символи (* # тощо).`;
+
+  const genderStr = gender === 'male' ? 'чоловік' : 'жінка';
+  const bmi = (weight / ((height / 100) ** 2)).toFixed(1);
+
+  const userMessage = `Мої параметри:\n- Вік: ${age} років\n- Зріст: ${height} см\n- Вага: ${weight} кг\n- Стать: ${genderStr}\n- ІМТ: ${bmi}\n- Мета: ${goalMap[selectedGoal]}\n- Місце тренувань: ${placeMap[selectedPlace]}\n\nСклади мені персональний план тренувань на тиждень. Вкажи:\n1. Короткий аналіз моїх параметрів\n2. Тижневий план (дні тренувань та відпочинку, групи м'язів)\n3. Для кожного тренувального дня — список вправ з підходами та повтореннями\n4. Декілька порад щодо харчування та відновлення\n\nБудь конкретним та структурованим.`;
+
+  conversationHistory = [];
+  callAPI(systemPrompt, userMessage);
+}
+
+function addUserMessage(text) {
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="msg-label">Ви</div><div class="msg-bubble">${escapeHTML(text)}</div>`;
+  appendMessage(div);
+}
+function addBotMessage(html) {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = `<div class="msg-label">YouFIT AI</div><div class="msg-bubble">${html}</div>`;
+  appendMessage(div);
+}
+function appendMessage(el) {
+  const msgs = document.getElementById('messages');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function showThinking() {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'thinking';
+  div.innerHTML = `<div class="msg-label">YouFIT AI</div><div class="thinking"><span></span><span></span><span></span></div>`;
+  appendMessage(div);
+}
+function removeThinking() { document.getElementById('thinking')?.remove(); }
+
+async function callAPI(systemPrompt, userText) {
+  conversationHistory.push({ role: 'user', content: userText });
+  showThinking();
+  try {
+    const res = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: systemPrompt,
+        messages: conversationHistory
+      })
+    });
+    const data = await res.json();
+    removeThinking();
+    const text = data.content?.map(i => i.text || '').join('') || 'Сталася помилка. Спробуй ще раз.';
+    conversationHistory.push({ role: 'assistant', content: text });
+    addBotMessage(text);
+    document.getElementById('chatTitle').textContent = 'Діалог з AI-тренером';
+    document.getElementById('chatDot').classList.remove('active');
+  } catch (e) {
+    removeThinking();
+    addBotMessage('<strong>Помилка з\'єднання.</strong> Перевір інтернет і спробуй знову.');
+    document.getElementById('chatTitle').textContent = 'Очікування';
+    document.getElementById('chatDot').classList.remove('active');
+  }
+}
+
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addUserMessage(text);
+  const sysPrompt = `Ти — персональний AI-тренер YouFITSupport. Ти вже створив план тренувань для користувача: вік ${userData.age} років, зріст ${userData.height} см, вага ${userData.weight} кг, стать: ${userData.gender === 'male' ? 'чоловік' : 'жінка'}, мета: ${goalMap[userData.goal]}, місце: ${placeMap[userData.place]}. Продовжуй консультацію — коригуй план на прохання, відповідай на питання про тренування, харчування, відновлення. Говори українською мовою, професійно. Використовуй HTML: <strong>, <ul><li>. НЕ використовуй markdown.`;
+  callAPI(sysPrompt, text);
+}
+</script>
+</body>
+</html>
